@@ -4,9 +4,8 @@ A simple webcam-based face detection and recognition tool using Python and OpenC
 
 ---
 
-## 🚀 Quick Start Guide (For Beginners)
 
-Follow these steps **exactly** and you'll have it working in 5 minutes!
+how to use!
 
 ### **Step 1: Download the Code**
 

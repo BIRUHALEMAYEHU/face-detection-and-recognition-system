@@ -5,6 +5,7 @@ import numpy as np
 def enroll_new_face():
     """
     Captures a face from webcam, asks for name, and stores the face image.
+    Supports multiple captures for different angles.
     """
     print("=" * 50)
     print("FACE ENROLLMENT SYSTEM")
@@ -12,9 +13,16 @@ def enroll_new_face():
     print("\nInstructions:")
     print("- Position your face in front of the camera")
     print("- Press SPACE when ready to capture")
-    print("- Press ESC to cancel\n")
+    print("- Press ESC to cancel")
+    print("\n💡 TIP: For best results, enroll 3-5 images:")
+    print("   1. Looking straight at camera")
+    print("   2. Head turned slightly left")
+    print("   3. Head turned slightly right")
+    print("   4. Looking slightly up")
+    print("   5. Looking slightly down")
+    print()
     
-    # Load OpenCV's pre-trained face detector
+    # Load OpenCV's pre-trained face detector with improved parameters
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
     
     # Initialize webcam
@@ -38,8 +46,14 @@ def enroll_new_face():
         # Convert to grayscale for face detection
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-        # Detect faces
-        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(100, 100))
+        # Detect faces with improved parameters for better angle tolerance
+        faces = face_cascade.detectMultiScale(
+            gray, 
+            scaleFactor=1.05,      # Smaller scale factor for better detection
+            minNeighbors=3,        # Lower threshold for more detections
+            minSize=(80, 80),      # Smaller minimum size
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
         
         # Draw rectangles around detected faces
         for (x, y, w, h) in faces:
@@ -115,7 +129,18 @@ def enroll_new_face():
     # Count total enrolled people
     total_people = len([d for d in os.listdir(faces_dir) if os.path.isdir(os.path.join(faces_dir, d))])
     print(f"✓ Total enrolled people: {total_people}")
-    print("=" * 50)
+    
+    # Ask if user wants to capture another angle
+    print("\n" + "-" * 50)
+    print("💡 Capture another angle for better recognition? (y/n): ", end="")
+    if input().lower() == 'y':
+        print("\nGreat! Turn your head slightly and capture another angle.")
+        print("Press any key when ready...")
+        input()
+        # Recursively call to capture another image for the same person
+        enroll_new_face()
+    else:
+        print("=" * 50)
 
 if __name__ == "__main__":
     enroll_new_face()

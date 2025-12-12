@@ -89,8 +89,14 @@ def recognize_faces():
         # Convert to grayscale for face detection
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-        # Detect faces
-        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(100, 100))
+        # Detect faces with improved parameters for better angle tolerance
+        faces = face_cascade.detectMultiScale(
+            gray,
+            scaleFactor=1.05,      # Smaller scale factor for better detection
+            minNeighbors=3,        # Lower threshold for more detections
+            minSize=(80, 80),      # Smaller minimum size
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
         
         # Recognize each detected face
         for (x, y, w, h) in faces:
